@@ -28,3 +28,40 @@ This installer contains the base docker images needed to perform a full installa
     ```
 
 Then visit [your local install](https://localhost:8484/) in a webrowser.
+
+## Full Text Search
+
+### Create _tsearch_ table
+
+Below is the example of creating _tsearch_ table for the full text search.
+
+```bash
+docker exec package_gmf_db psql -c "
+    INSERT INTO main.tsearch (the_geom, layer_name, label, public, role_id, lang, ts)
+    SELECT
+        ST_TRANSFORM(wkb_geometry, 2056),
+        'Country',
+        name,
+        't',
+        NULL,
+        NULL,
+        to_tsvector('en', name) || to_tsvector('de', name)
+    FROM ne_10m_admin_0_sovereignty;
+    "
+```
+
+### Dump _tsearch_ table
+
+Below is an example of create a dump of _tsearch_ table.
+
+```bash
+docker exec -i package_gmf_db pg_dump -d gmf_package_gmf  --table main.tsearch -F c > "tsearch.dmp"
+```
+
+### Restore _tsearch_ table
+
+Below is an example of restoring _tsearch_ table a dump previously created.
+
+```bash
+docker exec -i ${package_name}_db pg_restore -d gmf_${package_name} --clean < "tsearch.dmp"
+```
