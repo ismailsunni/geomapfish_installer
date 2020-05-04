@@ -33,7 +33,7 @@ Then visit [your local install](https://localhost:8484/) in a webrowser.
 
 ### Create _tsearch_ table
 
-Below is the example of creating _tsearch_ table for the full text search.
+Below is an example of creating _tsearch_ table for the full text search.
 
 ```bash
 docker exec package_gmf_db psql -c "
@@ -63,5 +63,5 @@ docker exec -i package_gmf_db pg_dump -d gmf_package_gmf  --table main.tsearch -
 Below is an example of restoring _tsearch_ table a dump previously created.
 
 ```bash
-docker exec -i ${package_name}_db pg_restore -d gmf_${package_name} --clean < "tsearch.dmp"
+docker exec -i package_gmf_db pg_restore -d gmf_package_gmf --clean < "tsearch.dmp"
 ```
